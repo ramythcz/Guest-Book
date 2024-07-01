@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.serverapp.models.dto.request.GuestRequest;
+import com.example.serverapp.models.dto.response.GuestEventResponse;
 import com.example.serverapp.models.entity.Event;
 import com.example.serverapp.models.entity.Guest;
 import com.example.serverapp.repository.EventRepository;
@@ -56,7 +57,22 @@ public class GuestServiceImpl implements GenericService<Guest, Integer> {
         return guest;
     }
 
-    public Guest create(GuestRequest guestRequest) {
+    public GuestEventResponse deleteDTO(Integer id) {
+        Guest guest = getById(id);
+        guestRepository.delete(guest);
+        if (!guestRepository.findById(id).isPresent()) {
+            GuestEventResponse guestEventResponse = new GuestEventResponse();
+            guestEventResponse.setNama(guest.getNama());
+            guestEventResponse.setAlamat(guest.getAlamat());
+            guestEventResponse.setKeterangan(guest.getKeterangan());
+            guestEventResponse.setNoTelepon(guest.getNoTelepon());
+            guestEventResponse.setWaktuKunjungan(guestEventResponse.getWaktuKunjungan());
+            return guestEventResponse;
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tidak Bisa Menghapus Tamu Ini");
+    }
+
+    public Guest createDTO(GuestRequest guestRequest) {
         Guest guest = modelMapper.map(guestRequest, Guest.class);
         LocalDateTime waktuKunjungan = LocalDateTime.parse(guestRequest.getWaktuKunjungan());
         guest.setWaktuKunjungan(waktuKunjungan);
@@ -72,6 +88,16 @@ public class GuestServiceImpl implements GenericService<Guest, Integer> {
            events.add(event);
         }
         return events;
+   }
+
+    public Guest updateDTO(Integer id,GuestRequest guestRequest){
+        getById(id);
+        Guest guest = modelMapper.map(guestRequest, Guest.class);
+        LocalDateTime waktuKunjungan = LocalDateTime.parse(guestRequest.getWaktuKunjungan());
+        guest.setWaktuKunjungan(waktuKunjungan);
+        guest.setEvents(getEventFromRequest(guestRequest.getEventsId()));
+        guest.setId(id);
+        return guestRepository.save(guest);
    }
     
 

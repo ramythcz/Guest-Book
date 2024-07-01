@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.serverapp.models.dto.request.GuestRequest;
+import com.example.serverapp.models.dto.response.GuestEventResponse;
 import com.example.serverapp.models.entity.Guest;
 import com.example.serverapp.service.implement.GuestServiceImpl;
 
@@ -36,16 +37,26 @@ public class GuestController {
 
     @PostMapping
     public ResponseEntity<Guest> create(@RequestBody GuestRequest guestRequest){
-        return ResponseEntity.ok(guestServiceImpl.create(guestRequest));
+        return ResponseEntity.ok(guestServiceImpl.createDTO(guestRequest));
     }
 
     @PutMapping("/{id}")
-    public Guest update(@PathVariable Integer id, @RequestBody Guest guest){
-        return guestServiceImpl.update(id, guest);
+    public ResponseEntity<Guest> update(@PathVariable Integer id, @RequestBody GuestRequest guestRequest){
+        return ResponseEntity.ok(guestServiceImpl.updateDTO(id, guestRequest));
     }
 
+    // @PutMapping("/{id}")
+    // public Guest update(@PathVariable Integer id, @RequestBody Guest guest){
+    //     return guestServiceImpl.update(id, guest);
+    // }
+
+    // @DeleteMapping("/{id}")
+    // public Guest delete(@PathVariable Integer id){
+    //     return guestServiceImpl.delete(id);
+    // }
+
     @DeleteMapping("/{id}")
-    public Guest delete(@PathVariable Integer id){
-        return guestServiceImpl.delete(id);
+    public ResponseEntity<GuestEventResponse> delete(@PathVariable Integer id){
+        return ResponseEntity.ok(guestServiceImpl.deleteDTO(id));
     }
 }
