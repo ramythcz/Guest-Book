@@ -18,37 +18,57 @@
                     <table class="table table-striped table-md" id="table1">
                         <thead>
                         <tr>
-                            <th>ID Film</th>
-                            <th>Nama Film</th>
-                            <th>Release Date</th>
-                            <th>Harga</th>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Alamat</th>
+                            <th>No Telepon</th>
+                            <th>Keperluan</th>
+                            <th>Keterangan</th>
+                            <th>Waktu Kunjungan</th>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                              <th scope="row">1</th>
-                              <td>Mark</td>
-                              <td>Otto</td>
-                              <td>@mdo</td>
+                            <tr th:each="g, key : ${guests}">
+                                <td th:text="${key.count}"></td>
+                                <td th:text="${g.nama}"></td>
+                                <td th:text="${g.alamat}"></td>
+                                <td th:text="${g.noTelepon}"></td>
+                                <td>
+                                    <ul>
+                                        <li th:each="event : ${g.events}" th:text="${event.nama}"></li>
+                                    </ul>
+                                </td>
+                                <td th:text="${g.keterangan}"></td>
+                                <td class="waktu-kunjungan" th:text="${g.waktuKunjungan}"></td>
                             </tr>
-                            <tr>
-                              <th scope="row">2</th>
-                              <td>Jacob</td>
-                              <td>Thornton</td>
-                              <td>@fat</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">3</th>
-                              <td>Larry</td>
-                              <td>the Bird</td>
-                              <td>@twitter</td>
-                            </tr>
-                          </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
     
+    <script>
+        function formatDatetime(datetime) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            const event = new Date(datetime);
+            return event.toLocaleDateString('id-ID', options).replace(',', '');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const datetimeCells = document.querySelectorAll('.waktu-kunjungan');
+            datetimeCells.forEach(cell => {
+                const formattedDatetime = formatDatetime(cell.textContent);
+                cell.textContent = formattedDatetime;
+            });
+
+           
+            $('#table1').DataTable();
+        });
+
+       
+
+    </script>
+
 </body>
 </html>

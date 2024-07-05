@@ -22,17 +22,23 @@
                     <div class="card-header"><h4>Daftar</h4></div>
       
                     <div class="card-body">
-                      <form method="POST">
+                      <form th:method="POST" th:object="${guestCreateRequest}" th:action="@{/pendaftaran}">
                         <div class="row">
                           <div class="form-group">
                             <label for="first_name">Nama</label>
-                            <input id="first_name" type="text" class="form-control" name="first_name" autofocus>
+                            <input id="first_name" type="text" class="form-control" name="nama" autofocus th:field="*{nama}">
                           </div>
                         </div>
       
                         <div class="form-group">
                           <label for="notep">No. Telepon</label>
-                          <input id="text" type="text" class="form-control" name="email">
+                          <input id="text" type="text" class="form-control" name="notelepon" th:field="*{noTelepon}">
+                          <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="notep">Alamat</label>
+                          <input id="text" type="text" class="form-control" name="alamat" th:field="*{alamat}">
                           <div class="invalid-feedback"></div>
                         </div>
       
@@ -41,31 +47,24 @@
                         <div class="row">
                           <div class="form-group col-6">
                             <label>Keperluan</label>
-                            <select class="form-control selectric">
-                              <option>Berkunjung</option>
-                              <option>Meminjam buku</option>
-                              <option>Membaca buku</option>
-                              <option>Dll..</option>
-                            </select>
+                            <select class="form-control selectric" 
+                                    name="eventList">
+                              <option th:each="event : ${events}" 
+                                      th:value="${event.id}" 
+                                      th:text="${event.nama}"></option>
+                          </select>
                           </div>
                           <div class="form-group col-6 h-100">
-                            <label>Textarea</label>
-                            <input type="text" class="form-control h-100">
+                            <label>Keterangan</label>
+                            <input type="text" class="form-control h-100" th:field="*{keterangan}">
                           </div>
                         </div>
                         
                         <div class="row">
                             <div class="form-group col-6">
                             <label>Datetime Local</label>
-                            <input type="datetime-local" class="form-control">
+                            <input type="datetime-local" class="form-control" th:field="*{waktuKunjungan}">
                         </div>  
-                        </div>
-      
-                        <div class="form-group">
-                          <div class="custom-control custom-checkbox">
-                            <input type="checkbox" name="agree" class="custom-control-input" id="agree">
-                            <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
-                          </div>
                         </div>
       
                         <div class="form-group">
@@ -106,5 +105,24 @@
 
 <!-- Page Specific JS File -->
 <script th:src="@{/stisla/assets/js/page/auth-register.js}"></script>
+
+<script th:inline="javascript">
+  $(document).ready(function() {
+      function addSelectStudio() {
+          var selectHTML = '<select class="form-control mb-2" name="eventList">';
+          let events = [[${events}]];
+          events.forEach(function(event) {
+              selectHTML += '<option value="' + event.id + '">' + event.nama + '</option>';
+          });
+          selectHTML += '</select>';
+          $('#selectContainer').append(selectHTML);
+      }
+
+      $('#addOptionBtnEvent').click(function() {
+          addSelectStudio();
+      });
+  });
+</script>
+
 </body>
 </html>
